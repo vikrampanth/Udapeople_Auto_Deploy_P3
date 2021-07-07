@@ -6,7 +6,7 @@
 
 - name: Copy index test page
   template:
-    src: "./dist"
+    src: "~/project/backend/dist"
     dest: "~/web"
 
 - name: Executing node
