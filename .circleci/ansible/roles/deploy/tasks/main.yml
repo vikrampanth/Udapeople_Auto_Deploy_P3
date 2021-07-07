@@ -1,7 +1,12 @@
 ---
+- name: Working directory
+  shell: |
+    pwd
+
 - name: Build Package
   shell: |
-    cd ~/project/backend
+    pwd
+    cd ~/backend
     sudo npm install
     sudo npm run build   
 
