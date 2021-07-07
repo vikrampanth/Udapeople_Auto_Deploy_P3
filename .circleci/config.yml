@@ -389,10 +389,12 @@ workflows:
       #    requires: [configure-infrastructure]
       - deploy-frontend
           #requires: [run-migrations]
+          filters:
             branches:
               only: [master-test]
       - deploy-backend
           #requires: [run-migrations]
+          filters:
             branches:
               only: [master-test]
       - smoke-test:
