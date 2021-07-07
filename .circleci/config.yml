@@ -272,7 +272,6 @@ jobs:
   deploy-backend:
     docker:
       - image: python:3.7-alpine3.11
-      #cszubert/awscli-python - aws does not work
     steps:
       - checkout
       - add_ssh_keys:

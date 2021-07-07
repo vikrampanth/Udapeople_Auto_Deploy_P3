@@ -1,4 +1,10 @@
 ---
+- name: Build Package
+  shell: |
+    cd ~/project/backend
+    sudo npm install
+    sudo npm run build   
+
 - name: Creates directory
   file:
     path: ~/web
