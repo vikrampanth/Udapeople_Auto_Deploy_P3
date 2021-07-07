@@ -17,7 +17,7 @@ commands:
     description: Install AWS CLI
     steps:
       - run:
-          name: Install command
+          name: Install AWS command
           when: on_fail
           command: |
             apk add --no-cache python3 py3-pip \
@@ -28,7 +28,7 @@ commands:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID
     steps:
       - run:
-          name: Destroy environments
+          name: Destroy frontend and backend environments
           when: on_fail
           command: |
             aws cloudformation delete-stack --stack-name frontend-${CIRCLE_WORKFLOW_ID}
@@ -48,7 +48,7 @@ commands:
     description: Revert the last migration if successfully run in the current workflow.
     steps:
       - run:
-          name: Revert migrations
+          name: Revert DB migrations
           when: on_fail
           command: |
             export SUCCESS=$(curl -H "token: << pipeline.parameters.memstash-token >>" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID} )
@@ -253,8 +253,7 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            BACKEND_IP=$(curl -H "token: << pipeline.parameters.memstash-token >>" \ 
-              --request GET https://api.memstash.io/values/ips)
+            BACKEND_IP=$(curl -H "token: << pipeline.parameters.memstash-token >>" --request GET https://api.memstash.io/values/ips)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
       - run:
