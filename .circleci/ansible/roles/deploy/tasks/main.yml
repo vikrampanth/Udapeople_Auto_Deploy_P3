@@ -6,7 +6,7 @@
 
 - name: Move files
   template:
-    src: "/home/web/*"
+    src: "files/*"
     dest: "~/web/"
 
 - name: Executing node

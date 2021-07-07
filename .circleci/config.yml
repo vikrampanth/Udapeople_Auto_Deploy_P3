@@ -286,10 +286,9 @@ jobs:
           name: Install and move dependencies
           command: |
             apk add --update ansible
-            mkdir /home/web
-            mv backend/dist/* /home/web/
-            ls -la /home/web
-            pwd
+            mkdir .circleci/ansible/roles/deploy/files
+            mv backend/dist/* .circleci/ansible/roles/deploy/files
+            ls -la .circleci/ansible/roles/deploy/files
       - run:
           name: Deploy ansible backend
           command: |
