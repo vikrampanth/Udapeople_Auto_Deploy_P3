@@ -285,7 +285,7 @@ jobs:
           name: Deploy backend
           command: |
             cd backend
-            ansible-playbook ~/.circleci/ansible/deploy-backend.yml -i ~/.circleci/ansible/inventory.txt
+            ansible-playbook ~/project/.circleci/ansible/deploy-backend.yml -i ~/project/.circleci/ansible/inventory.txt
       - aws-cli-setup-python
       - revert-migrations
       - destroy-environment
