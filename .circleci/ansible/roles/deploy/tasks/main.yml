@@ -6,8 +6,8 @@
 
 - name: Move files
   template:
-    src: "files/main.js"
-    dest: "~/web/main.js"
+    src: "files/"
+    dest: "~/web/"
 
 - name: Executing node
   shell: |
