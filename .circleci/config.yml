@@ -77,6 +77,9 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
+      - save_cache:
+          paths: [frontend/dist]
+          key: frontend-dist
 
   build-backend:
     docker:
@@ -248,10 +251,11 @@ jobs:
       - image: sleavely/node-awscli
     steps:
       - checkout
+      - restore_cache:
+          keys: [frontend-dist]
       - run:
           name: Install dependencies
           command: |
-            echo "test"
             apt update
       - run:
           name: Get backend url
@@ -263,8 +267,6 @@ jobs:
           name: Deploy frontend objects
           command: |
             cd frontend
-            npm install
-            npm run build
             aws s3 cp dist/ s3://udapeople-${CIRCLE_WORKFLOW_ID} --recursive
            # can use sync . to upload all new files
       - revert-migrations
@@ -286,6 +288,8 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible
+            sudo ls -la /root/project/backend
+            sudo ls -la /root/project/backend/dist
       - run:
           name: Deploy backend
           command: |
@@ -359,9 +363,7 @@ jobs:
       - run:
           name: Get old stack workflow id
           command: |
-            aws cloudformation list-exports --query "Exports[?Name=='PipelineID'].Value" \
-              --no-paginate --output text
-            export OldWorkflowID="the id here"
+            export OldWorkflowID=aws cloudformation list-exports --query "Exports[?Name=='PipelineID'].Value" --no-paginate --output text
             export STACKS=[] #put the list of stacks here
       - run:
           name: Remove old stacks and files
@@ -394,16 +396,17 @@ workflows:
           requires: [build-frontend]
       - deploy-infrastructure:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          filters:
+            branches:
+              only: [master]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       #- run-migrations:
       #    requires: [configure-infrastructure]
-      - deploy-frontend:
+      - deploy-frontend
           #requires: [run-migrations]
-          requires: [configure-infrastructure]
-      - deploy-backend:
+      - deploy-backend
           #requires: [run-migrations]
-          requires: [configure-infrastructure]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
           filters:
