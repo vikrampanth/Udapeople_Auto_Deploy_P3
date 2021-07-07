@@ -281,13 +281,11 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible
-            cd backend
-            npm install
-            npm run build
       - run:
           name: Deploy backend
           command: |
-            ansible-playbook .circleci/ansible/deploy-backend.yml -i .circleci/ansible/inventory.txt
+            cd backend
+            ansible-playbook ~/.circleci/ansible/deploy-backend.yml -i ~/.circleci/ansible/inventory.txt
       - aws-cli-setup-python
       - revert-migrations
       - destroy-environment
