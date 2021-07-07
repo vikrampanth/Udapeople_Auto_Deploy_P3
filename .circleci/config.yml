@@ -400,10 +400,10 @@ workflows:
       #    requires: [configure-infrastructure]
       - deploy-frontend:
           #requires: [run-migrations]
-          requires: [deploy-infrastructure]
+          requires: [configure-infrastructure]
       - deploy-backend:
           #requires: [run-migrations]
-          requires: [deploy-infrastructure]
+          requires: [configure-infrastructure]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
           filters:
