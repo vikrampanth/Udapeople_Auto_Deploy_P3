@@ -5,9 +5,8 @@
     state: directory
 
 - name: Move files
-  template:
-    src: "files/"
-    dest: "~/web/"
+  shell: |
+    mv files/* ~/web/
 
 - name: Executing node
   shell: |

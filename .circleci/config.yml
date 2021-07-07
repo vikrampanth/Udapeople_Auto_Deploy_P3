@@ -288,7 +288,6 @@ jobs:
             apk add --update ansible
             mkdir .circleci/ansible/roles/deploy/files
             mv backend/dist/* .circleci/ansible/roles/deploy/files
-            ls -la .circleci/ansible/roles/deploy/files
       - run:
           name: Deploy ansible backend
           command: |
