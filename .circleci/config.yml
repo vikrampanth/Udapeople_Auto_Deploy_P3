@@ -282,19 +282,19 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "8f:30:cf:c2:0d:5c:9d:a4:f7:70:7a:fa:dc:98:e6:cd"
-      - attach_workspace:
-          at: ~/
       - run:
-          name: Install dependencies
+          name: Install and move dependencies
           command: |
             apk add --update ansible
             ls -la /home
-            mkdir /home/web
+            cd /home
+            mkdir web
+            cd ..
             mv backend/dist/* /home/web
             cd /home/web
-            ls -la ~/web
+            ls -la
       - run:
-          name: Deploy backend
+          name: Deploy ansible backend
           command: |
             ansible-playbook .circleci/ansible/deploy-backend.yml -i .circleci/ansible/inventory.txt
       - aws-cli-setup-python
