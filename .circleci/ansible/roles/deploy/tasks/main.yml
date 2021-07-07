@@ -6,8 +6,8 @@
 
 - name: Copy index test page
   template:
-    src: "files/index.js"
-    dest: "~/web/index.js"
+    src: "./dist"
+    dest: "~/web"
 
 - name: Executing node
   shell: |
