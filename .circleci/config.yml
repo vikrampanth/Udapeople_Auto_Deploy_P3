@@ -5,9 +5,6 @@ defaultpythonimage: &defaultpythonimage
     - image: python:3.7-alpine3.11
 
 parameters:
-  workflow-id:
-    type: string
-    default: "${CIRCLE_WORKFLOW_ID:0:7}"
   memstash-token:
     type: string
     default: "c8c16243-3ac7-45ec-9a0a-5ca9ef15261a"
@@ -288,8 +285,8 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible
-            sudo ls -la /root/project/backend
-            sudo ls -la /root/project/backend/dist
+            ls -la /root/project/backend
+            ls -la /root/project/backend/dist
       - run:
           name: Deploy backend
           command: |
@@ -346,6 +343,13 @@ jobs:
           command: |
             apk add --update curl
       - run:
+          name: Get and store Last Pipeline ID
+          command: |
+            export OldWorkflowID=$(aws cloudformation list-exports --query "Exports[?Name=='PipelineID'].Value" \
+              --no-paginate --output text  > /tmp/workspace/last_pipeline.txt)
+            curl -H "Content-Type: text/plain" -H "token: << pipeline.parameters.memstash-token >>" \
+              --request PUT --data $OldWorkflowID https://api.memstash.io/values/last_pipeline_${CIRCLE_WORKFLOW_ID}
+      - run:
           name: Update cloudfront distribution
           command: |
             aws cloudformation deploy \
@@ -363,16 +367,16 @@ jobs:
       - run:
           name: Get old stack workflow id
           command: |
-            export OldWorkflowID=aws cloudformation list-exports --query "Exports[?Name=='PipelineID'].Value" --no-paginate --output text
+            export OldWorkflowID=$(curl -H "token: << pipeline.parameters.memstash-token >>" --request GET https://api.memstash.io/values/last_pipeline_${CIRCLE_WORKFLOW_ID} )
             export STACKS=[] #put the list of stacks here
       - run:
           name: Remove old stacks and files
           command: |
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
+              aws s3 rm --recursive s3://udapeople-${OldWorkflowID}
               aws cloudformation delete-stack --stack-name frontend-${CIRCLE_WORKFLOW_ID}
               aws cloudformation delete-stack --stack-name backend-${CIRCLE_WORKFLOW_ID}
-              echo "test"
             fi
             
 workflows:
@@ -381,11 +385,11 @@ workflows:
       - build-frontend:
           filters:
             branches:
-              only: [master]
+              only: [master-test]
       - build-backend:
           filters:
             branches:
-              only: [master]
+              only: [master-test]
       - test-frontend:
           requires: [build-frontend]
       - test-backend:
@@ -398,7 +402,7 @@ workflows:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           filters:
             branches:
-              only: [master]
+              only: [master-test]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       #- run-migrations:
