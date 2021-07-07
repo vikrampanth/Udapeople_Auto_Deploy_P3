@@ -286,13 +286,10 @@ jobs:
           name: Install and move dependencies
           command: |
             apk add --update ansible
-            ls -la /home
-            cd /home
-            mkdir web
-            cd ..
+            mkdir /home/web
             mv backend/dist/* /home/web
-            cd /home/web
-            ls -la
+            ls -la /home/web
+            pwd
       - run:
           name: Deploy ansible backend
           command: |
