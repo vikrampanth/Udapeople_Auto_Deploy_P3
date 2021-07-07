@@ -288,9 +288,11 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible
-            mkdir /home/ubuntu/web
-            mv backend/dist/* /home/ubuntu/web
-            cd /home/ubuntu/web
+            ls -la /home
+            ls -la /home/circleci/project
+            mkdir /home/web
+            mv backend/dist/* /home/web
+            cd /home/web
             ls -la ~/web
       - run:
           name: Deploy backend

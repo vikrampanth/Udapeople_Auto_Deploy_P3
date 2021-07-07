@@ -1,4 +1,4 @@
 ---
 - name: Executing node
   shell: |
-    pm2 start ~/web/main.js -f
+    pm2 start /home/web/main.js -f
