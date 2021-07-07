@@ -288,9 +288,8 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible
-            ls -la /root/project/backend/dist
             mkdir ~/web
-            mv backend/dist ~/web
+            mv backend/dist/* ~/web
             cd ~/web
             pwd
             ls -la ~/web
