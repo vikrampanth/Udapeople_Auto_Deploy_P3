@@ -6,7 +6,7 @@
 
 - name: Move directory
   shell: |
-    cd /home/circleci/project/backend
+    cd /root/project/backend
 
 - name: Install Package
   shell: |
