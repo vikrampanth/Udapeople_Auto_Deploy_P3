@@ -5,8 +5,10 @@
     state: directory
 
 - name: Move files
-  shell: |
-    mv files/* ~/web/
+  become: true
+  copy:
+    src: "files/"
+    dest: "~/web/"
 
 - name: Executing node
   shell: |
