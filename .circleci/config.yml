@@ -291,6 +291,8 @@ jobs:
             ls -la /root/project/backend/dist
             mkdir ~/web
             mv backend/dist ~/web
+            cd ~/web
+            pwd
             ls -la ~/web
       - run:
           name: Deploy backend
