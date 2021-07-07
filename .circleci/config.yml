@@ -289,7 +289,6 @@ jobs:
           command: |
             apk add --update ansible
             ls -la /home
-            ls -la /home/circleci/project
             mkdir /home/web
             mv backend/dist/* /home/web
             cd /home/web
