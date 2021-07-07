@@ -248,7 +248,8 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update curl
+            echo "test"
+            apt update
       - run:
           name: Get backend url
           command: |
