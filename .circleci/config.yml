@@ -71,7 +71,6 @@ jobs:
             cd frontend
             sudo npm install
             sudo npm run build
-            ls -la
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
@@ -95,7 +94,6 @@ jobs:
             sudo npm fund
             sudo npm audit fix
             sudo npm run build
-            ls -la
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -269,7 +267,8 @@ jobs:
           command: |
             cd frontend
             ls -la
-            aws s3 cp dist/ s3://udapeople-${CIRCLE_WORKFLOW_ID} --recursive
+            aws s3 cp dist/ s3://udapeople-942f9d69-4c48-4176-9702-3f2726aa1aa3 --recursive
+          #aws s3 cp dist/ s3://udapeople-${CIRCLE_WORKFLOW_ID} --recursive
            # can use sync . to upload all new files
       - revert-migrations
       - destroy-environment
