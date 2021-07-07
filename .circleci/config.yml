@@ -72,7 +72,7 @@ jobs:
           name: Build front-end
           command: |
             cd frontend
-            sudo npm i
+            sudo npm install
             sudo npm run build
       - save_cache:
           paths: [frontend/node_modules]
@@ -89,7 +89,7 @@ jobs:
           name: Back-end build
           command: |
             cd backend
-            sudo npm i
+            sudo npm install
             sudo npm fund
             sudo npm audit fix
             sudo npm run build
@@ -260,11 +260,10 @@ jobs:
           name: Deploy frontend objects
           command: |
             cd frontend
-            npm i
+            npm install
             npm run build
-            aws s3 cp dist/ s3://udapeople-vp-${CIRCLE_WORKFLOW_ID} --recursive
-            #aws s3 cp .circleci/files/ s3://udapeople-vp-877716312368 --recursive
-            # can use sync . to upload all new files
+            aws s3 cp dist/ s3://udapeople-${CIRCLE_WORKFLOW_ID} --recursive
+           # can use sync . to upload all new files
       - revert-migrations
       - destroy-environment
                     
