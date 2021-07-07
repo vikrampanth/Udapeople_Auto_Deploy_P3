@@ -38,7 +38,7 @@ commands:
           name: Destroy s3 bucket
           when: on_fail
           command: |
-            aws s3 rm --recursive udapeople-vp-${CIRCLE_WORKFLOW_ID}
+            aws s3 rb s3://udapeople-vp-${CIRCLE_WORKFLOW_ID} --force
 
 
   revert-migrations:
@@ -93,6 +93,7 @@ jobs:
             sudo npm fund
             sudo npm audit fix
             sudo npm run build
+            lss -la
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -264,6 +265,7 @@ jobs:
           name: Deploy frontend objects
           command: |
             cd frontend
+            ls -la
             aws s3 cp dist/ s3://udapeople-${CIRCLE_WORKFLOW_ID} --recursive
            # can use sync . to upload all new files
       - revert-migrations
@@ -374,9 +376,9 @@ jobs:
           command: |
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
-              aws s3 rm --recursive s3://udapeople-${OldWorkflowID}
-              aws cloudformation delete-stack --stack-name frontend-${CIRCLE_WORKFLOW_ID}
-              aws cloudformation delete-stack --stack-name backend-${CIRCLE_WORKFLOW_ID}
+              aws s3 rb s3://udapeople-vp-${OldWorkflowID} --force
+              aws cloudformation delete-stack --stack-name frontend-${OldWorkflowID}
+              aws cloudformation delete-stack --stack-name backend-${OldWorkflowID}
             fi
             
 workflows:
@@ -385,11 +387,11 @@ workflows:
       - build-frontend:
           filters:
             branches:
-              only: [master-test]
+              only: [master]
       - build-backend:
           filters:
             branches:
-              only: [master-test]
+              only: [master]
       - test-frontend:
           requires: [build-frontend]
       - test-backend:
