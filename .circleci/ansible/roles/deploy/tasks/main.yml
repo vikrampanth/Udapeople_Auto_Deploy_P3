@@ -1,21 +1,4 @@
 ---
-- name: Working directory
-  shell: |
-    echo $PWD
-    ls
-
-- name: Move directory
-  shell: |
-    cd /root/project/backend
-
-- name: Install Package
-  shell: |
-    sudo npm install
-
-- name: Build Package
-  shell: |
-    sudo npm run build   
-
 - name: Creates directory
   file:
     path: ~/web
