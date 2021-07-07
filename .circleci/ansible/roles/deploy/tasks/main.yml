@@ -6,7 +6,7 @@
 
 - name: Move directory
   shell: |
-    cd ~/backend
+    cd ~/project/backend
 
 - name: Install Package
   shell: |
