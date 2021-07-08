@@ -4,16 +4,16 @@
     path: ~/web
     state: directory
 
-- name: Copy backend files
+- name: Copy backend tar files
   become: true
   copy:
     src: /home/backend-dist.tar.gz
     dest: ~/web/backend-dist.tar.gz
 
-- name: Build Package
+- name: Unpack
   shell: |
     cd ~/web
-    tar xzvf backend.tar.gz
+    tar xzvf backend-dist.tar.gz
 
 - name: Executing node
   shell: |
