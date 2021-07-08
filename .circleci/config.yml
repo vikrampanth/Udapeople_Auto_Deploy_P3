@@ -326,12 +326,12 @@ jobs:
           name: Get backend url
           command: |
             BACKEND_IP=$(sed -n 2p .circleci/ansible/inventory.txt)
-            export API_URL="http://${BACKEND_IP}:3030"
+            export API_URL="http://${BACKEND_IP}:3030/api/status"
             echo "${API_URL}"
       - run:
           name: Backend smoke test.
           command: |
-            if curl -s "${API_URL}"
+            if curl -s ${API_URL}
               then
                 return 0
               else
