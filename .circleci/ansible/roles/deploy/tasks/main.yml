@@ -10,14 +10,10 @@
     src: /home/backend-dist.tar.gz
     dest: ~/web/backend-dist.tar.gz
 
-- name: List file
-  shell: |
-    cd ~/web
-    ls -la
-
 - name: Unpack
   shell: |
     cd ~/web
+    ls -la
     tar xzvf backend-dist.tar.gz
     mv root/project/backend/dist/ .
 
