@@ -289,7 +289,7 @@ jobs:
             apk add --update tar gzip
             mkdir .circleci/ansible/roles/deploy/files
             cd /home
-            tar czf backend-dist.tar.gz -P backend/dist
+            tar czf backend-dist.tar.gz -P ~/project/backend/dist
           #mv backend/dist/* .circleci/ansible/roles/deploy/files
       - run:
           name: Deploy ansible backend
