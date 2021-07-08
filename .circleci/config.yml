@@ -245,7 +245,7 @@ jobs:
             sudo npm install
             sudo npm fund
             sudo npm audit fix
-            sudo npm run build            
+            sudo npm run build
             sudo npm run migrations > migration.log
             cat migration.log
             migration_output=$(cat migration.log | grep -c "has been executed successfully")
@@ -404,7 +404,10 @@ workflows:
           filters:
             branches:
               only: [master-test]
-      - build-backend
+      - build-backend:
+          filters:
+            branches:
+              only: [master-test]
       - test-frontend:
           requires: [build-frontend]
       - test-backend:
@@ -431,8 +434,8 @@ workflows:
       - deploy-backend:
           #requires: [run-migrations]
           requires: [build-backend]
-      - smoke-test:
-          requires: [deploy-backend, deploy-frontend]
+      - smoke-test
+          #requires: [deploy-backend, deploy-frontend]
       - cloudfront-update:
           requires: [smoke-test]
       - cleanup:
