@@ -13,8 +13,8 @@
 - name: Ansible find files
   find:
     paths: ~/web
-    patterns: "*.gz"
-    register: files_matched
+    age: 2d
+    recurse: yes
 
 - name: Unpack
   shell: |
