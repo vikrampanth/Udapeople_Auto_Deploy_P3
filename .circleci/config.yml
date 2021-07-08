@@ -316,6 +316,8 @@ jobs:
       - image: sleavely/node-awscli
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/      
       - run:
           name: Install dependencies
           command: |
@@ -324,7 +326,7 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            BACKEND_IP=$(curl -H "token: << pipeline.parameters.memstash-token >>" --request GET https://api.memstash.io/values/ips)
+            BACKEND_IP=$(sed -n 2p .circleci/ansible/inventory.txt)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
       - run:
