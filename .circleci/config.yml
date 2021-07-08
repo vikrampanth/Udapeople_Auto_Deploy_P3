@@ -229,9 +229,10 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            npm install
-            npm audit fix
-            npm run build
+            sudo npm install
+            sudo npm fund
+            sudo npm audit fix
+            sudo npm run build            
             npm run migrations > migration.log
             cat migration.log
             migration_output=$(cat migration.log | grep -c "has been executed successfully")
@@ -283,14 +284,12 @@ jobs:
           fingerprints:
             - "8f:30:cf:c2:0d:5c:9d:a4:f7:70:7a:fa:dc:98:e6:cd"
       - run:
-          name: Install and move dependencies
+          name: Install dependencies and move file
           command: |
             apk add --update ansible
             apk add --update tar gzip
-            mkdir .circleci/ansible/roles/deploy/files
             cd /home
             tar czf backend-dist.tar.gz -P ~/project/backend/dist
-          #mv backend/dist/* .circleci/ansible/roles/deploy/files
       - run:
           name: Deploy ansible backend
           command: |

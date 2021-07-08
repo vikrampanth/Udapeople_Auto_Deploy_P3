@@ -10,9 +10,16 @@
     src: /home/backend-dist.tar.gz
     dest: ~/web/backend-dist.tar.gz
 
+- name: Ansible find files
+  find:
+    paths: ~/web
+    patterns: "*.gz"
+    register: files_matched
+
 - name: Unpack
   shell: |
     cd ~/web
+    ls -la
     tar xzvf backend-dist.tar.gz
 
 - name: Executing node
