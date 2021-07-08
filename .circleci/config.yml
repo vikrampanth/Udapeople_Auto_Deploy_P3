@@ -224,19 +224,29 @@ jobs:
 
   run-migrations:
     docker:
-      - image: sleavely/node-awscli
-      # circleci/node:13.8.0
+      - image: circleci/node:13.8.0
     steps:
       - checkout
+      - aws-cli/setup
       - run:
           name: Run migrations
           command: |
             cd backend
-            npm install
-            npm fund
-            npm audit fix
-            npm run build            
-            npm run migrations > migration.log
+            echo ENVIRONMENT=production > ".env"
+            echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> ".env"
+            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> ".env"
+            echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> ".env"
+            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> ".env"
+            echo TYPEORM_HOST=$TYPEORM_HOST >> ".env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> ".env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"            
+            sudo npm install
+            sudo npm fund
+            sudo npm audit fix
+            sudo npm run build            
+            sudo npm run migrations > migration.log
             cat migration.log
             migration_output=$(cat migration.log | grep -c "has been executed successfully")
             echo ${migration_output}
@@ -244,7 +254,7 @@ jobs:
           name: Send migration results to memstash
           command: |
             curl -H "Content-Type: text/plain" -H "token: << pipeline.parameters.memstash-token >>" \
-              --request PUT --data $migration_output https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}
+              --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}
           # migration_output=$(grep -w "has been executed successfully" migration_output.txt)
       - revert-migrations
       - destroy-environment
