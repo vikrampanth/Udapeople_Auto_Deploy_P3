@@ -8,7 +8,7 @@
   become: true
   copy:
     src: /home/backend-dist.tar.gz
-    dest: ~/web/backend-dist.tar.gz
+    dest: /home/ubuntu/backend-dist.tar.gz
 
 - name: Ansible find files
   find:
@@ -18,9 +18,10 @@
 
 - name: Unpack
   shell: |
-    cd ~/web
+    cd /home/ubuntu
     ls -la
     tar xzvf backend-dist.tar.gz
+    mv /home/ubuntu/dist/ ~/web/
 
 - name: Executing node
   shell: |

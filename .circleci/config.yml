@@ -4,6 +4,9 @@ defaultpythonimage: &defaultpythonimage
   docker:
     - image: python:3.7-alpine3.11
 
+orbs:
+  aws-cli: circleci/aws-cli@1.3.0
+
 parameters:
   memstash-token:
     type: string
@@ -229,10 +232,10 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            sudo npm install
-            sudo npm fund
-            sudo npm audit fix
-            sudo npm run build            
+            npm install
+            npm fund
+            npm audit fix
+            npm run build            
             npm run migrations > migration.log
             cat migration.log
             migration_output=$(cat migration.log | grep -c "has been executed successfully")
