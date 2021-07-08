@@ -331,7 +331,7 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            if curl -s ${API_URL}
+            if curl -s "${API_URL}"
               then
                 return 0
               else
@@ -348,6 +348,7 @@ jobs:
                 return 0
             fi            
       - revert-migrations
+      - aws-cli-setup-python
       - destroy-environment
 
   cloudfront-update:
