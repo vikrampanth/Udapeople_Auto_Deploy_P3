@@ -212,8 +212,6 @@ jobs:
       - run:
           name: Configure server
           command: |
-            cat backend/.env
-
             ansible-playbook .circleci/ansible/configure-server.yml \
               -i .circleci/ansible/inventory.txt
       - aws-cli-setup-python
@@ -228,6 +226,8 @@ jobs:
       - run:
           name: Run migrations
           command: |
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
             cd backend
             cat .env
             sudo npm install
@@ -292,6 +292,11 @@ jobs:
           command: |
             apk add --update ansible
             apk add --update tar gzip
+
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
+            cat backend/.env
+
             cd /home
             tar czf backend.tar.gz -P ~/project/backend
       - run:
@@ -325,7 +330,7 @@ jobs:
               then
                 return 0
               else
-                return 0
+                return 1
             fi
       - run:
           name: Frontend smoke test.
@@ -336,7 +341,7 @@ jobs:
               then
                 return 0
               else
-                return 0
+                return 1
             fi            
       - revert-migrations
       - aws-cli-setup-python

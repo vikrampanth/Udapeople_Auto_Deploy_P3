@@ -7,14 +7,14 @@
 - name: Copy backend tar files
   become: true
   copy:
-    src: /home/backend-dist.tar.gz
-    dest: /home/ubuntu/backend-dist.tar.gz
+    src: /home/backend.tar.gz
+    dest: /home/ubuntu/backend.tar.gz
 
 - name: Unpack and move
   shell: |
     cd /home/ubuntu
     ls -la
-    tar xzvf backend-dist.tar.gz
+    tar xzvf backend.tar.gz
     mv root/project/backend/ ~/web/
 
 - name: Executing node
