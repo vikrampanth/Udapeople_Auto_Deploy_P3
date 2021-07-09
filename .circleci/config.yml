@@ -362,7 +362,12 @@ jobs:
           name: Get and store Last Pipeline ID
           command: |
             export OldWorkflowID=$(aws cloudformation list-exports --query "Exports[?Name=='PipelineID'].Value" --no-paginate --output text)
-            curl -H "Content-Type: text/plain" -H "token: << pipeline.parameters.memstash-token >>" --request PUT --data $OldWorkflowID https://api.memstash.io/values/last_pipeline_${CIRCLE_WORKFLOW_ID}
+            if [ -z "${OldWorkflowID}" ]
+            then
+              echo "No old implementation"
+            else
+              curl -H "Content-Type: text/plain" -H "token: << pipeline.parameters.memstash-token >>" --request PUT --data ${OldWorkflowID} https://api.memstash.io/values/last_pipeline_${CIRCLE_WORKFLOW_ID}
+            fi
       - run:
           name: Update cloudfront distribution
           command: |
