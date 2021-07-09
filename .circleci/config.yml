@@ -247,8 +247,7 @@ jobs:
       - run:
           name: Send migration results to memstash
           command: |
-            curl -H "Content-Type: text/plain" -H "token: << pipeline.parameters.memstash-token >>" \
-              --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}
+            curl -H "Content-Type: text/plain" -H "token: << pipeline.parameters.memstash-token >>" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}
       - revert-migrations
       - destroy-environment
 
@@ -441,11 +440,11 @@ workflows:
               only: [master]          
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
+      #- run-migrations:
+      #    requires: [configure-infrastructure]
       - deploy-frontend:
-          requires: [run-migrations]
-          #requires: [configure-infrastructure]
+          #requires: [run-migrations]
+          requires: [configure-infrastructure]
       - deploy-backend:
           requires: [deploy-frontend]
       - smoke-test:
