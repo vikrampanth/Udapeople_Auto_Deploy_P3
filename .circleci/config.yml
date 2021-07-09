@@ -41,7 +41,7 @@ commands:
           name: Empty s3 bucket
           when: on_fail
           command: |
-            aws s3 rm --recursive s3://udapeople-vp-${OldWorkflowID}
+            aws s3 rm --recursive s3://udapeople-${CIRCLE_WORKFLOW_ID}
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -327,6 +327,7 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
+            curl -s http://${BACKEND_IP}:3030/api/status
             if curl -s http://${BACKEND_IP}:3030/api/status
               then
                 return 0
@@ -337,6 +338,7 @@ jobs:
           name: Frontend smoke test.
           command: |
             URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com"
+            curl -s ${URL} | grep "Welcome"
             if curl -s ${URL} | grep "Welcome"
               then
                 return 0
@@ -356,13 +358,13 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            apk add --update py3-pip && pip3 install --upgrade pip && pip3 install awscli
             apk add --update curl
       - run:
           name: Get and store Last Pipeline ID
           command: |
             export OldWorkflowID=$(aws cloudformation list-exports --query "Exports[?Name=='PipelineID'].Value" --no-paginate --output text)
-            curl -H "Content-Type: text/plain" -H "token: << pipeline.parameters.memstash-token >>" \
-              --request PUT --data $OldWorkflowID https://api.memstash.io/values/last_pipeline_${CIRCLE_WORKFLOW_ID}
+            curl -H "Content-Type: text/plain" -H "token: << pipeline.parameters.memstash-token >>" --request PUT --data $OldWorkflowID https://api.memstash.io/values/last_pipeline_${CIRCLE_WORKFLOW_ID}
       - run:
           name: Update cloudfront distribution
           command: |
@@ -372,7 +374,6 @@ jobs:
             --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID}" \
             --tags project=udapeople
       - revert-migrations
-      - aws-cli-setup-python
       - empty-s3
       - destroy-environment
 
@@ -392,15 +393,37 @@ jobs:
               then
                 echo "No old Id and empty"
               else
-                aws s3 rm --recursive s3://udapeople-vp-${OldWorkflowID}
+                aws s3 rm --recursive s3://udapeople-${OldWorkflowID}
                 aws cloudformation delete-stack --stack-name frontend-${OldWorkflowID}
                 aws cloudformation delete-stack --stack-name backend-${OldWorkflowID}
             fi
 #           aws s3 rb s3://udapeople-vp-${OldWorkflowID} --force
-            
+
+  build-prometheus:
+    <<: *defaultpythonimage
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "8f:30:cf:c2:0d:5c:9d:a4:f7:70:7a:fa:dc:98:e6:cd"
+      - run:
+          name: Update dependencies
+          command: |
+            apk add --update ansible
+      - run:
+          name: Configure server
+          command: |
+            ansible-playbook .circleci/ansible/prometheus.yml \
+              -i .circleci/ansible/prom-inventory.txt
+
+
 workflows:
   default:
     jobs:
+      - build-prometheus:
+          filters:
+            branches:
+              only: [prom]      
       - build-frontend
       - build-backend
       - test-frontend:
@@ -413,13 +436,16 @@ workflows:
           requires: [build-frontend]
       - deploy-infrastructure:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          filters:
+            branches:
+              only: [master]          
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-      #- run-migrations:
-      #    requires: [configure-infrastructure]
-      - deploy-frontend:
-          #requires: [run-migrations]
+      - run-migrations:
           requires: [configure-infrastructure]
+      - deploy-frontend:
+          requires: [run-migrations]
+          #requires: [configure-infrastructure]
       - deploy-backend:
           requires: [deploy-frontend]
       - smoke-test:
