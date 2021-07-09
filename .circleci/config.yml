@@ -55,7 +55,7 @@ commands:
             then
               cd ~/project/backend
               npm install
-              npm run migrations:revert
+              npm run migrations:revert > migration_revert.log
             fi
 
 jobs:
@@ -98,10 +98,6 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/backend/dist
 
   test-frontend:
     docker:
@@ -236,7 +232,6 @@ jobs:
             cat .env
             sudo npm install
             sudo npm fund
-            sudo npm audit fix
             sudo npm run build
             sudo npm run migrations > migration_output.log
             cat migration_output.log
@@ -298,7 +293,7 @@ jobs:
             apk add --update ansible
             apk add --update tar gzip
             cd /home
-            tar czf backend-dist.tar.gz -P ~/project/backend/dist
+            tar czf backend.tar.gz -P ~/project/backend
       - run:
           name: Deploy ansible backend
           command: |
@@ -444,11 +439,10 @@ workflows:
               only: [master]          
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-      #- run-migrations:
-      #    requires: [configure-infrastructure]
-      - deploy-frontend:
-          #requires: [run-migrations]
+      - run-migrations:
           requires: [configure-infrastructure]
+      - deploy-frontend:
+          requires: [run-migrations]
       - deploy-backend:
           requires: [deploy-frontend]
       - smoke-test:
