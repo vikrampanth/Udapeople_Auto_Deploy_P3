@@ -292,6 +292,7 @@ jobs:
           command: |
             apk add --update ansible
             apk add --update tar gzip
+            apk add --update curl
 
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
@@ -305,6 +306,7 @@ jobs:
             ansible-playbook .circleci/ansible/deploy-backend.yml -i .circleci/ansible/inventory.txt
       - aws-cli-setup-python
       - revert-migrations
+      - empty-s3
       - destroy-environment
 
   smoke-test:
