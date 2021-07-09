@@ -1,5 +1,5 @@
 Public Url to GitHub repository (not private) [URL01]
-https://github.com/vikrampanth/cdond-c3-projectstarter
+https://github.com/vikrampanth/Udapeople_Auto_Deploy_P3
 
 Public URL for your S3 Bucket (aka, your green candidate front-end) [URL02]
 
