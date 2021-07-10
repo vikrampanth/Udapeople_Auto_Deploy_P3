@@ -408,11 +408,11 @@ jobs:
           command: |
             if [ -z "${OldWorkflowID}" ]
               then
-                echo "No old Id and empty"
-              else
                 aws s3 rm --recursive s3://udapeople-${OldWorkflowID}
                 aws cloudformation delete-stack --stack-name frontend-${OldWorkflowID}
                 aws cloudformation delete-stack --stack-name backend-${OldWorkflowID}
+              else
+                echo "No old Id and empty"
             fi
 #           aws s3 rb s3://udapeople-vp-${OldWorkflowID} --force
 
