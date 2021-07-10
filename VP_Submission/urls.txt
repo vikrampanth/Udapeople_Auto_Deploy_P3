@@ -1,0 +1,16 @@
+Public Url to GitHub repository (not private) [URL01]
+https://github.com/panthvikram/udapeople_deploy_P3
+
+Public URL for your S3 Bucket (aka, your green candidate front-end) [URL02]
+https://s3.console.aws.amazon.com/s3/buckets/udapeople-3664a475-fc84-4c39-8807-e9f393c6458f?region=us-west-2
+http://udapeople-3664a475-fc84-4c39-8807-e9f393c6458f.s3-website-us-west-2.amazonaws.com/#/employees
+
+Public URL for your CloudFront distribution (aka, your blue production front-end) [URL03]
+http://d2m7rnilo70mi0.cloudfront.net/
+
+Public URLs to deployed application back-end in EC2 [URL04]
+http://ec2-34-219-40-35.us-west-2.compute.amazonaws.com:3030/api/status
+
+Public URL to your Prometheus Server [URL05]
+http://ec2-52-13-104-120.us-west-2.compute.amazonaws.com:9090/targets
+
